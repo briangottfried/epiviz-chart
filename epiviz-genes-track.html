@@ -27,7 +27,8 @@
         </style>
 
         <!-- local DOM goes here -->
-        <div id="chart" style="min-width:700px"></div>
+        <!-- <div id="chart" style="min-width:700px"></div> -->
+        <content id="chart" style="min-width:700px"> </content>
     
     </template>
 
@@ -38,15 +39,24 @@
 
             /* Properties that can be defined on the element */
             properties: {
-
-                dimX: {
+                genome:{
                     type: String,
                     notify: true
                 },
 
-                dimS: {
-                    type: Array,
-                    notify: true
+                chromosome:{
+                    type: String,
+                    notify:true
+                },
+
+                start:{
+                    type: Number,
+                    notify:true
+                },
+
+                end:{
+                    type: Number,
+                    notify:true
                 },
 
                 useDefaultDataProvider: {
@@ -416,7 +426,14 @@
                         'metadata': ['gene', 'entrez', 'exon_starts', 'exon_ends']
                     }];
 
-                    self.range = self.range || new epiviz.datatypes.GenomicRange("chr11", 80000000, 3000000);
+                    self.range = self.range || new epiviz.datatypes.GenomicRange(self.chromosome, self.start, self.end);
+
+                    var numChildren = self.getEffectiveChildren().length;
+
+                    for(var index = 0; index < numChildren; index++){
+                        var currChild = self.getContentChildren('#chart')[index];
+                        currChild.range = self.range;
+                    }
 
                     self._measurementsChanged();
 
